@@ -1,0 +1,9 @@
+[submodule "OAK60_ROS2"]
+	path = OAK60_ROS2
+	url = git@github.com:Pratik-45454/OAK60_ROS2.git
+[submodule "2026_ROS2_SERVERS"]
+	path = 2026_ROS2_SERVERS
+	url = git@github.com:Pratik-45454/2026_ROS2_SERVERS.git
+[submodule "2026_ROS2_SERIAL_BRIDGE"]
+	path = 2026_ROS2_SERIAL_BRIDGE
+	url = git@github.com:Pratik-45454/2026_ROS2_SERIAL_BRIDGE.git
