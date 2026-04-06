@@ -1,0 +1,12 @@
+<root main_tree_to_execute="MainTree">
+    <BehaviorTree ID="MainTree">
+        <Sequence name="root_sequence">
+            <GoToSpear name="go_to_spear"/>
+            <!-- <GoToForest name="go_to_forest"/> -->
+            
+            <!-- <OpenGripper name="open_gripper"/>
+            <ApproachObject name="approach_object"/>
+            <CloseGripper name="close_gripper"/> -->
+        </Sequence>
+    </BehaviorTree>
+</root>
