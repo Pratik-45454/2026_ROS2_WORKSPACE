@@ -4,7 +4,7 @@
   <name>ar_interfaces</name>
   <version>0.0.0</version>
   <description>TODO: Package description</description>
-  <maintainer email="080bct059.pratyush@pcampus.edu.np">jeff</maintainer>
+  <maintainer email="gyawalip11@gmail.com">pratik</maintainer>
   <license>TODO: License declaration</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>

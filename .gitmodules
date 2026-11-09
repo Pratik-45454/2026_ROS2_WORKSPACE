@@ -3,7 +3,7 @@
 	url = git@github.com:Pratik-45454/OAK60_ROS2.git
 	branch = main
 [submodule "2026_ROS2_SERVERS"]
-	path = 2026_ROS2_SERVERS
+	path = bt_servers
 	url = git@github.com:Pratik-45454/2026_ROS2_SERVERS.git
 	branch = main
 [submodule "2026_ROS2_SERIAL_BRIDGE"]
