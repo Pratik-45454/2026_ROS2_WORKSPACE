@@ -1,0 +1,116 @@
+<root BTCPP_format="4" main_tree_to_execute="MainTree">
+  <BehaviorTree ID="MainTree">
+        <!-- For the love of robot, dont change this Mfucking code  - M  -->
+        <Sequence>
+            <Delay name="startup_delay" delay_msec="1000">
+                <AlwaysSuccess/>
+            </Delay>
+            <SubTree ID="ROOT_TREE"/>
+        </Sequence>
+       
+    </BehaviorTree>
+
+    <BehaviorTree ID="ROOT_TREE">
+        <KeepRunningUntilFailure>
+            <WhileDoElse>
+
+                <StartWait name="wait for init robot"/>
+                <SubTree ID="START_ROBOT"/>
+                <AlwaysSuccess/>
+
+            </WhileDoElse>
+       
+        </KeepRunningUntilFailure>
+    </BehaviorTree>
+
+    <BehaviorTree ID="START_ROBOT">
+        <Sequence>
+            <!-- <SetpointLoader /> -->
+
+            <InitRobot name = "Initialize robot and color"
+                color="{color}" />
+            
+            <Inverter>
+                <KeepRunningUntilFailure>
+                    <Inverter>
+                        <WhileDoElse>
+                            
+                            <GoWait name="Wait for go signal"/>
+                       
+                            <Sequence>
+                                <ZoneConfig name="zone_config" zone="{zone}"/>
+                                <Switch3
+                                
+                                    variable="{zone}"
+                                    case_1="0" 
+                                    case_2="1"
+                                    case_3="2">
+
+                                    <SubTree ID = "START_ZONE"/>
+                                    <SubTree ID = "RETRY_ZONE_1"/>
+                                    <SubTree ID = "RETRY_ZONE_2"/>
+                                    <AlwaysFailure/>  
+
+                                </Switch3>
+                            </Sequence>
+                            
+                            <AlwaysSuccess/>
+                        </WhileDoElse>
+                        
+                    </Inverter>
+                </KeepRunningUntilFailure>
+            </Inverter>
+        </Sequence>
+    </BehaviorTree>
+
+    <BehaviorTree ID ="START_ZONE">
+        <Sequence>
+        <!-- <SubTree ID = "Martial_tree"/> -->
+        <SubTree ID = "ForestTree"/>
+        <!-- <SubTree ID = "out_tree"/> -->
+        
+        <!-- <SubTree ID = "ArenaRunTree"/> -->
+        </Sequence>
+    </BehaviorTree>
+
+    <BehaviorTree ID ="RETRY_ZONE_1"> 
+        <Sequence>
+            <!-- <SubTree ID = "Martial_tree"/> -->
+            <SubTree ID = "ForestTree"/>
+            <SubTree ID = "out_tree"/>
+            <SubTree ID = "ArenaRunTree"/>
+        </Sequence>
+    </BehaviorTree>
+
+    <BehaviorTree ID ="RETRY_ZONE_2">
+        <Sequence>
+            <Move name="goNearRack" move_x="1000.0" move_y="10.0"
+                            x_kp="0.009" x_ki="0.0" x_kd="0.003"
+                            y_kp="0.002" y_ki="0.0" y_kd="0.001"/>
+
+            <IfThenElse>
+                <CheckForFallenScroll name="fallen_scroll_pick_condition" pick_dropped ="{pick_dropped}" />
+                <Sequence>
+                    <Parallel>
+
+                        <Move name="goNearFallenScroll" move_x="1000.0" move_y="10.0"
+                                x_kp="0.009" x_ki="0.0" x_kd="0.003"
+                                y_kp="0.002" y_ki="0.0" y_kd="0.001"/>
+                        <SubTree ID="GripperGroundScrollPick_Ready"/>
+                    </Parallel>
+
+                    <SubTree ID="GripperScrollPick"/>
+                    <SubTree ID="GripperScrollHold"/>
+                    <IncrementalScroll action = "0" count = "{count}"/> 
+                        <Move name="goNearRack" move_x="1000.0" move_y="10.0"
+                                x_kp="0.009" x_ki="0.0" x_kd="0.003"
+                                y_kp="0.002" y_ki="0.0" y_kd="0.001"/>
+
+                </Sequence>
+                <SubTree ID = "ArenaRunTree"/>
+            </IfThenElse>
+
+        </Sequence>
+
+    </BehaviorTree>
+</root>

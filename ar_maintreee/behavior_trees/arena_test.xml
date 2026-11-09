@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<root BTCPP_format="4" main_tree_to_execute="MainTree">
+
+    <BehaviorTree ID="arena_tree">
+        <Sequence name="RootSequence">
+            <RetryUntilSuccessful num_attempts="-1">
+                <Rotate name="Rotate" rotate_state="90" final_yaw="{final_yaw}"/>
+            </RetryUntilSuccessful>
+            <RetryUntilSuccessful num_attempts="-1">
+                <Move name="Move" move_x="2000" move_y="-20"/>
+            </RetryUntilSuccessful>
+            <Parallel>
+                <Sequence name="Sequence3">
+                <RetryUntilSuccessful num_attempts="-1">
+                    <Move name="Move" move_x="2000" move_y="-45"/>
+                </RetryUntilSuccessful>
+                </Sequence>
+                <SubTree ID="ScrollReady" _autoremap="true"/>
+            </Parallel>
+            <SubTree ID="ScrollArenaPlace" _autoremap="true"/>
+            <RetryUntilSuccessful num_attempts="-1">
+                <Move name="Move" move_x="-2000" move_y="0"/>
+            </RetryUntilSuccessful>
+        </Sequence>
+    </BehaviorTree>
+
+
+
+</root>

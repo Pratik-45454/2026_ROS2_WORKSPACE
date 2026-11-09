@@ -1,0 +1,83 @@
+<root BTCPP_format="4">
+    <BehaviorTree ID="TMP2">
+            <Sequence>
+                <SickPIDClient name="entrance_sick_pid_" setpoint="{entrance_movement_}"/> <!--Robot goes to the decided setpoint-->
+                <AlwaysSuccess/>
+
+                <!-- <RetryUntilSuccessful num_attempts="-1">
+                    <GripperPose angle="0.0"/>
+                </RetryUntilSuccessful>
+
+                <RetryUntilSuccessful num_attempts="-1">
+                    <setHeight height="32.0"/>
+                </RetryUntilSuccessful>
+
+                <RetryUntilSuccessful num_attempts="-1">
+                    <GripperPose angle="1.8"/>
+                </RetryUntilSuccessful>
+
+                <RetryUntilSuccessful num_attempts="-1">
+                    <GripperAct state="-2.0"/>
+                </RetryUntilSuccessful>
+
+                <RetryUntilSuccessful num_attempts="-1">
+                    <GripperPose angle="3.22"/>
+                </RetryUntilSuccessful>
+
+                <RetryUntilSuccessful num_attempts="-1">
+                    <GripperAct state="-0.2"/>
+                </RetryUntilSuccessful>
+
+                <RetryUntilSuccessful num_attempts="-1">
+                    <GripperPose angle="0.5"/>
+                </RetryUntilSuccessful>
+
+                <RetryUntilSuccessful num_attempts="-1">
+                    <GripperAct state="-1.8"/>
+                </RetryUntilSuccessful> -->
+           
+          <!-- <RetryUntilSuccessful num_attempts="-1">
+                <AlignArena name="AlignBeforePlace" target_x="1000" target_y="50.0" />
+            </RetryUntilSuccessful> -->
+
+
+            <!-- <Delay delay_msec="5000">
+                <AlwaysSuccess/>
+            </Delay>
+            <RetryUntilSuccessful num_attempts="-1">
+                <Move name="Move" move_x="-400" move_y="-400"/>
+            </RetryUntilSuccessful>
+            <Delay delay_msec="5000">
+                <AlwaysSuccess/>
+            </Delay>
+            <RetryUntilSuccessful num_attempts="-1">
+                <Move name="Move" move_x="400" move_y="400"/>
+            </RetryUntilSuccessful>
+            <Delay delay_msec="5000">
+                <AlwaysSuccess/>
+            </Delay>
+            <RetryUntilSuccessful num_attempts="-1">
+                <Move name="Move" move_x="-400" move_y="-400"/>
+            </RetryUntilSuccessful> -->
+            <!-- <Delay delay_msec="5000">
+                <AlwaysSuccess/>
+            </Delay>
+            <RetryUntilSuccessful num_attempts="-1">
+                <Move name="Move" move_x="-1200" move_y="-1200"/>
+            </RetryUntilSuccessful>
+            <Delay delay_msec="5000">
+                <AlwaysSuccess/>
+            </Delay>
+            <RetryUntilSuccessful num_attempts="-1">
+                <Move name="Move" move_x="1200" move_y="1200"/>
+            </RetryUntilSuccessful>
+            <Delay delay_msec="5000">
+                <AlwaysSuccess/>
+            </Delay>
+            <RetryUntilSuccessful num_attempts="-1">
+                <Move name="Move" move_x="-1200" move_y="-1200"/>
+            </RetryUntilSuccessful> -->
+
+        </Sequence>
+    </BehaviorTree>
+</root>

@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<root BTCPP_format="4">
+
+    <BehaviorTree ID="ArenaRunTree">
+    <KeepRunningUntilFailure name="MainLoop">
+        <WhileDoElse name="pathCheckLoop">
+            <isPathClear name="checkForFrontObstacle"/>
+            <WhileDoElse name="rowCheckLoop">
+                <CheckSecondRow name="CheckSecondRow"/>
+                <SubTree ID="second_row_tree"/>
+                <SubTree ID="third_row_tree"/>
+            </WhileDoElse>
+            <AlwaysFailure name="obstacleBlocking"/>
+        </WhileDoElse>
+    </KeepRunningUntilFailure>
+    </BehaviorTree>
+
+    <BehaviorTree ID="second_row_tree">
+    <RetryUntilSuccessful num_attempts="-1">
+        <Sequence name="secondRowSequence">
+            <GetROIDetections
+                name="roiStage11roi1"
+                stage="11"
+                trigger_roi="1"
+                type="2"
+                color="red"
+                reset_delay_ms="1200"
+                detections="{detections}"/>
+
+            <!-- <ArenaAllDecision name="decide_rack"
+                move_x="{move_x}" move_y="{move_y}"
+                move_x_rec="{move_x_rec}" move_y_rec="{move_y_rec}"
+                align_x="{align_x}" align_y="{align_y}"/> -->
+
+            <Parallel>
+                <Move name="moveforplace" move_x="{move_x}" move_y="{move_y}"
+                        x_kp="0.009" x_ki="0.0" x_kd="0.003"
+                        y_kp="0.002" y_ki="0.0" y_kd="0.001"/>
+                <SubTree ID="GripperArenaPlace_Ready"/>
+            </Parallel>
+            
+
+            <RetryUntilSuccessful num_attempts="-1">
+                <AlignArena name="AlignBeforePlace" target_x="{align_x}" target_y="{align_y}" />
+            </RetryUntilSuccessful>
+
+
+            <IfThenElse>
+                <CheckPlaceCondition name="checkBeforePlace"/>
+                <SubTree ID="GripperArenaPlace"/>
+                <Sequence>
+                
+                        <Move name="backOffRobot" move_x="{move_x_rec}" move_y="{move_y_rec}"
+                        x_kp="0.009" x_ki="0.0" x_kd="0.003"
+                        y_kp="0.002" y_ki="0.0" y_kd="0.001"/>
+                    <SubTree ID="GripperArenaPlace"/>
+                </Sequence>
+            </IfThenElse>
+            <RetryUntilSuccessful num_attempts="-1">
+                <AlignArena name="AlignBeforePlace" target_x="{align_x}" target_y="{align_y}" />
+            </RetryUntilSuccessful>
+                <Move name="goNearRack" move_x="{move_x_rec}" move_y="{move_y_rec}"
+                x_kp="0.009" x_ki="0.0" x_kd="0.003"
+                y_kp="0.002" y_ki="0.0" y_kd="0.001"/>
+        </Sequence>
+    </RetryUntilSuccessful>
+    </BehaviorTree>
+
+    <BehaviorTree ID = "third_row_tree">
+      <Sequence name="thirdRowSequence">
+
+            <Sequence name="all_slots">
+                <WaitForLift/>
+                <Delay name = "lifting_time" delay_msec="8000">
+                    <AlwaysSuccess/>
+                </Delay>
+                <Delay name = "mr_move_time" delay_msec="4000">
+                    <AlwaysSuccess/>
+                </Delay>
+                <SubTree ID="GripperArenaPlace"/>
+            </Sequence>
+
+        </Sequence>
+    </BehaviorTree>
+
+</root>

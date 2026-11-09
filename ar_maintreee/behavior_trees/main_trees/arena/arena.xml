@@ -1,0 +1,183 @@
+<?xml version="1.0"?>
+<root BTCPP_format="4">
+    <BehaviorTree ID="ArenaTree">
+        <Sequence name="ArenaTree">
+
+            <Precondition if="pick_dropped == 1" else="SUCCESS">
+                <Sequence>
+                    <!-- <OdomPIDClient name="approach_dropped_scroll" setpoint="{odom_arena_approach_dropped}"/> Approach dropped scroll -->
+                    <Delay name = "gripper_simulate" delay_msec="3000">
+                        <AlwaysSuccess/>
+                    </Delay>
+                    <!-- <SickPIDClient name="go_to_place_dropped" setpoint="{tictac_place_setpoint}"/> If robot is not at the "right" of climbing block, adjust position with sick to try to get to the right of climbing block -->
+                    <Switch2 
+                        variable="{row}"
+                        case_1="2"
+                        case_2="3">
+
+                        <Sequence name="SecondRowSequence">
+                            <Delay name = "gripper_simulate_place_2nd" delay_msec="3000">
+                                <AlwaysSuccess/>
+                            </Delay>
+                            <AlwaysSuccess/>
+                        </Sequence>
+
+                        <Sequence name="ThirdRowSequence">
+                            <WaitForLift name="waitForUpLift"/>
+                            <Delay name = "gripper_simulate_place_3rd" delay_msec="3000">
+                                <AlwaysSuccess/>
+                            </Delay>
+                        </Sequence>
+
+                        <AlwaysFailure name="noRow"/>
+                    </Switch2>
+                </Sequence>
+            </Precondition>
+
+            <Move name="goNearRack" move_x="0.0" move_y="0.0"
+                 x_kp="0.003" x_ki="0.0" x_kd="0.0"
+                    y_kp="0.001" y_ki="0.0" y_kd="0.0"/>
+
+            <Parallel success_count="2" failure_count="1">
+                <Move name="moveToRackPosition" move_x="{move_x}" move_y="{move_y}"/>
+                <SubTree ID="ScrollReady"/>
+            </Parallel>
+
+            <IfThenElse>
+                <!-- <CheckSecondRow name="checkSecondRow" move_x="{move_x}" move_y="{move_y}"/> -->
+                <Sequence name="secondRowSequence">
+                    <Fallback name="roiFallback">
+
+                        <Sequence name="directSlot">
+                            <GetROIDetections
+                                name="roiStage11roi1"
+                                stage="11"
+                                trigger_roi="1"
+                                type="2"
+                                color="red"
+                                reset_delay_ms="1200"
+                                detections="{detections}"/>
+                            <RetryUntilSuccessful num_attempts="-1">
+                                <Move name="moveDirectSlot" move_x="{move_x}" move_y="{move_y}"/>
+                            </RetryUntilSuccessful>
+                            <SubTree ID="ScrollArenaPlace"/>
+                        </Sequence>
+
+                        
+                        <Sequence name="decisionSlot">
+                            <GetROIDetections
+                                name="roiStage12roi1"
+                                stage="12"
+                                trigger_roi="1"
+                                type="2"
+                                color="red"
+                                reset_delay_ms="1200"
+                                detections="{detections}"/>
+
+                            <!-- <ArenaDecisionNode
+                                detections="{detections}"
+                                move_x="{move_x}"
+                                move_y="{move_y}"
+                                dxn="{dxn}"/> -->
+
+                            <Switch4
+                                variable="{dxn}"
+                                case_1="L"
+                                case_2="R"
+                                case_3="M"
+                                case_4="F">
+
+                               
+                                <Fallback name="lFallback">
+                                    <Sequence name="lSlot1">
+                                        <GetROIDetections
+                                            stage="11"
+                                            trigger_roi="2"
+                                            type="2"
+                                            color="red"
+                                            reset_delay_ms="1200"
+                                            detections="{detections}"/>
+                                        <RetryUntilSuccessful num_attempts="-1">
+                                            <Move name="moveL1" move_x="{move_x}" move_y="{move_y}"/>
+                                        </RetryUntilSuccessful>
+                                        <SubTree ID="ScrollArenaPlace"/>
+                                    </Sequence>
+                                    <Sequence name="lSlot2">
+                                        <GetROIDetections
+                                            stage="11"
+                                            trigger_roi="3"
+                                            type="2"
+                                            color="red"
+                                            reset_delay_ms="1200"
+                                            detections="{detections}"/>
+                                        <RetryUntilSuccessful num_attempts="-1">
+                                            <Move name="moveL2" move_x="{move_x}" move_y="{move_y}"/>
+                                        </RetryUntilSuccessful>
+                                        <SubTree ID="ScrollArenaPlace"/>
+                                    </Sequence>
+                                    <AlwaysFailure name="lExhausted"/>
+                                </Fallback>
+
+                               
+                                <Fallback name="rFallback">
+                                    <Sequence name="rSlot1">
+                                        <GetROIDetections
+                                            stage="11"
+                                            trigger_roi="4"
+                                            type="2"
+                                            color="red"
+                                            reset_delay_ms="1200"
+                                            detections="{detections}"/>
+                                        <RetryUntilSuccessful num_attempts="-1">
+                                            <Move name="moveR1" move_x="{move_x}" move_y="{move_y}"/>
+                                        </RetryUntilSuccessful>
+                                        <SubTree ID="ScrollArenaPlace"/>
+                                    </Sequence>
+                                    <Sequence name="rSlot2">
+                                        <GetROIDetections
+                                            stage="11"
+                                            trigger_roi="5"
+                                            type="2"
+                                            color="red"
+                                            reset_delay_ms="1200"
+                                            detections="{detections}"/>
+                                        <RetryUntilSuccessful num_attempts="-1">
+                                            <Move name="moveR2" move_x="{move_x}" move_y="{move_y}"/>
+                                        </RetryUntilSuccessful>
+                                        <SubTree ID="ScrollArenaPlace"/>
+                                    </Sequence>
+                                    <AlwaysFailure name="rExhausted"/>
+                                </Fallback>
+
+                               
+                                <AlwaysFailure name="mExit"/>
+
+                            
+                                <AlwaysFailure name="fExit"/>
+
+                            </Switch4>
+                        </Sequence>
+
+                    </Fallback>
+
+                   
+                    <Parallel success_count="2" failure_count="1">
+                        <RetryUntilSuccessful num_attempts="-1">
+                            <Move name="goToMiddle" move_x="{move_x}" move_y="{move_y}"/>
+                        </RetryUntilSuccessful>
+                        <SubTree ID="ScrollReady"/>
+                    </Parallel>
+
+                </Sequence>
+
+                <Sequence name="thirdRowSequence">
+                    <WaitForLift name="LiftNormalSequence"/>
+                    <SubTree ID="ScrollArenaPlace"/>
+                </Sequence>
+
+            </IfThenElse>
+
+        </Sequence>
+    </BehaviorTree>
+
+</root>

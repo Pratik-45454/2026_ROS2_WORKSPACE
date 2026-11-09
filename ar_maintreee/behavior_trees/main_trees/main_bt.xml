@@ -1,0 +1,101 @@
+<root BTCPP_format="4"> <!--🛑For the love of god, lets happily work on the robot :)-->
+    <BehaviorTree ID="MainTree">
+        <!--<SickPIDClient SP1="1190.36" SP2="1190.0" SP3="3395.4.0" SP4="0.0"/>-->
+        <!-- <OdomPIDClient name="Move" move_x= "600.0" move_y= "0.0"/> -->
+        <!-- <YawSetpoint name="face_arena" turn="Right" current_yaw="{current_yaw}"/> -->
+        <!-- <YawPIDClient name="Rotate" rotate_state="90.0" final_yaw="{final_yaw}"/> -->
+
+    <!-- move this whole comment block up inside Behaviour tree block -->
+    <SequenceWithMemory>
+        <Delay name="startup_delay" delay_msec="1000">
+            <AlwaysSuccess/>
+        </Delay>
+        <SequenceWithMemory>
+            <InitializePortsActuators name="initialize_ports" color="{color}" turn="{turn}"/>
+            <SetpointLoader color="{color}"/>
+            
+            <!-- <Sequence>
+                <Delay name="startup_delay" delay_msec="1000">
+                    <RetryUntilSuccessful num_attempts="-1">
+                        <Sequence name="roi_detection_retry">
+                            <GetROIDetections
+                                name="get_roi_detections"
+                                stage="1"
+                                detections="{stage1_detections}"
+                            />
+                        </Sequence>
+                    </RetryUntilSuccessful>
+                </Delay>
+                <SetBlackboard output_key="photo_stage_1" value="1" />
+            </Sequence> -->
+
+            <Inverter>
+                <KeepRunningUntilFailure>
+                    <Precondition if="critical_failure != 1" else="FAILURE">
+                        <Inverter>
+                            <IfThenElse>
+                                <ZoneChange/>
+                                <WhileDoElse>
+                                    <WaitForSet name = "main_wait"  detections_stg_1="{stage1_detections}" detections_stg_2="{stage2_detections}" detections_stg_3="{stage3_detections}" 
+                                                detections_stg_4="{stage4_detections}" pick_dropped="{pick_dropped}" second_row="{second_row}" 
+                                                third_row="{third_row}"
+                                                color="{color}"
+                                                row="{row}"
+                                                trust="{trust}"/>
+                                    
+                                    <Fallback name="main_guard_against_failure">
+                                        <Sequence> <!--Should be sequence only-->
+
+                                            <Precondition if="in_martial == 1 && (spear_assembled == 0 || photo_sequence == 1)" else="SUCCESS">
+                                                <SubTree ID="SpearAssembly" _autoremap="true"/>                                            
+                                            </Precondition>
+                                            <Precondition if="spear_assembled == 1" else="RUNNING">
+                                                <AlwaysSuccess/>
+                                            </Precondition>
+
+                                            <Precondition if="in_martial == 1 && spear_assembled == 1 && scroll_picked_from_entrance == 0" else="SUCCESS">
+                                                <SubTree ID="SickScrollPickFromEntrance" _autoremap="true"/>
+                                            </Precondition>
+                                            <Precondition if="scroll_picked_from_entrance == 1" else="RUNNING">
+                                                <AlwaysSuccess/>
+                                            </Precondition>
+
+                                            <Precondition if="in_martial == 1 && spear_assembled == 1 && scroll_picked_from_entrance == 1 && climbed_three_photos == 0" else="SUCCESS">
+                                                <SubTree ID="ClimbThreePhotos" _autoremap="true"/>
+                                            </Precondition>
+                                            <Precondition if="climbed_three_photos == 1" else="RUNNING">
+                                                 <AlwaysSuccess/>
+                                            </Precondition>
+
+                                            <Precondition if="in_forest == 1" else="SUCCESS">
+                                            <SubTree ID="ForestTree" _autoremap="true"/>
+                                            </Precondition>
+                                            <Precondition if="in_forest == 0 && in_arena == 1" else="RUNNING">
+                                                 <AlwaysSuccess/>
+                                            </Precondition>
+<!--    
+                                            <Precondition if="in_arena == 1" else="SUCCESS">
+                                            <SubTree ID="ArenaTree" _autoremap="true"/>
+                                            </Precondition>
+                                            <Precondition if="in_arena == 1" else="RUNNING">
+                                                 <AlwaysSuccess/>
+                                            </Precondition> -->
+                                        </Sequence>
+
+                                        <ForceFailure name="force_failure">
+                                            <Script code="critical_failure:=1"/>
+                                        </ForceFailure>
+
+                                    </Fallback>
+                                    <AlwaysFailure/>
+                                </WhileDoElse>
+                                <AlwaysFailure/>
+                            </IfThenElse>
+                        </Inverter>
+                    </Precondition>
+                </KeepRunningUntilFailure>
+            </Inverter>
+        </SequenceWithMemory>
+    </SequenceWithMemory>
+    </BehaviorTree>
+</root>

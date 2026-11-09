@@ -1,0 +1,108 @@
+<root BTCPP_format="4">
+    <BehaviorTree ID="SickScrollPickFromEntrance">
+        <Sequence>
+
+            <DecisionSick name="1st_sick_decision" 
+                stage1="{stage1_detections}"
+                current_yaw="{current_yaw}"
+                turn="{turn}"
+                climb_position_reached="{climb_position_reached}"
+                pick_from_entrance="{pick_from_entrance}"
+                store="{store}"
+                under_roi="{under_roi}"/> <!--Decides between three setpoints on the x-axis based on camera or display input-->
+            
+            <Precondition if="climb_position_reached == 1" else="SUCCESS"> <!--If climbing block is where the entrance_zone_decision has taken the robot-->
+                <Sequence>
+                    <SickPIDClient name="entrance_sick_pid" setpoint="{entrance_movement_sick}"/> <!--Robot goes to the decided setpoint-->
+                    <Parallel success_count="2" failure_count="-1">
+                        <ReactiveSequence>
+                            <Inverter>
+                                <CheckForProx climb_state="0"/>
+                            </Inverter>
+                            <KeepRunningUntilFailure>
+                                <VelPublish climb_state="0" next_climb_state="0"/>
+                            </KeepRunningUntilFailure>
+                        </ReactiveSequence>
+                    
+                        <Sequence>
+                            <Precondition if="pick_from_entrance == 1 && store == 0" else="SUCCESS"> <!--To parallely run the grabber if we need to grab scroll-->
+                                <Sequence>
+                                    <GripperPose angle="3.1"/> <!--Set pitch grab scroll-->
+                                    <GripperAct state="1.2"/>  <!--Fully Open the gripper-->
+                                </Sequence>
+                            </Precondition>
+                        </Sequence>
+                    </Parallel>
+
+                    <Precondition if="pick_from_entrance == 1 && store == 0" else="SUCCESS"> <!--After prox is detected, check if we need to pick up scroll, store is used to check if scroll is already picked-->
+                        <Sequence> 
+                            <!-- <GripperAct state="2.0"/> Close the gripper to grab the scroll -->
+                            <GripperPose angle="1.5"/> <!--Raise the scroll after grabbing-->
+                            <!-- <setExtension length="0.0"/> Extend the elevator to make room for storing -->
+                            <GripperPose angle="0.0"/> <!--Pitch the gripper to store the scroll in the robot-->
+                            <!-- <GripperAct state="0.0"/> Open the gripper to drop the scroll in the robot -->
+                            <SetBlackboard output_key="store" value="1" />
+                        </Sequence>
+                    </Precondition>
+
+                </Sequence>
+            </Precondition>
+
+            <Precondition if="climb_position_reached == 0" else="SUCCESS"> <!--If the robot didnt go to the climbing block, the robot MUST pickup the scroll-->
+                <Sequence> 
+                            <SickPIDClient name="entrance_sick_pid" setpoint="{entrance_movement_sick_grip}"/> <!--Robot goes to the decided setpoint-->
+
+                            <RetryUntilSuccessful num_attempts="-1">
+                                <GripperPose angle="0.0"/>
+                            </RetryUntilSuccessful>
+            
+                            <RetryUntilSuccessful num_attempts="-1">
+                                <setHeight height="32.0"/>
+                            </RetryUntilSuccessful>
+            
+                            <RetryUntilSuccessful num_attempts="-1">
+                                <GripperPose angle="1.8"/>
+                            </RetryUntilSuccessful>
+            
+                            <RetryUntilSuccessful num_attempts="-1">
+                                <GripperAct state="-1.5"/>
+                            </RetryUntilSuccessful>
+            
+                            <RetryUntilSuccessful num_attempts="-1">
+                                <GripperPose angle="3.22"/>
+                            </RetryUntilSuccessful>
+            
+                            <RetryUntilSuccessful num_attempts="-1"> <!--Robot grips onto the scroll-->
+                                <GripperAct state="-0.1"/>
+                            </RetryUntilSuccessful>
+
+                            <SickPIDClient name="entrance_sick_pid" setpoint="{entrance_movement_sick}"/> <!--Robot backsup to bring the scroll closer-->
+
+                            <RetryUntilSuccessful num_attempts="-1"> <!--Opens its gripper after backing up-->
+                                <GripperAct state="-1.2"/>
+                            </RetryUntilSuccessful>
+
+                            <SickPIDClient name="entrance_sick_pid" setpoint="{entrance_movement_sick_grip}"/> <!--Robot forward to grab it again-->
+
+                            <RetryUntilSuccessful num_attempts="-1">
+                                <GripperAct state="-0.5"/>
+                            </RetryUntilSuccessful>
+
+                            <RetryUntilSuccessful num_attempts="-1">
+                                <GripperPose angle="0.5"/>
+                            </RetryUntilSuccessful>
+                            
+                            <RetryUntilSuccessful num_attempts="-1">
+                                <GripperAct state="-1.8"/>
+                            </RetryUntilSuccessful>
+
+                            <SetBlackboard output_key="store" value="1" />
+
+                            <SickPIDClient name="go_to_climb" setpoint="{sick_martial_middle_entrance}"/> <!--If robot is not at the "right" of climbing block, adjust position with sick to try to get to the right of climbing block-->
+                </Sequence>
+            </Precondition>
+            
+            <SetBlackboard output_key="scroll_picked_from_entrance" value="1" />
+        </Sequence>
+    </BehaviorTree>
+</root>

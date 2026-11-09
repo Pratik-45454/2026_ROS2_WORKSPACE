@@ -1,0 +1,80 @@
+<root BTCPP_format="4">
+    <BehaviorTree ID="ClimbThreePhotos">
+        <Sequence>
+            <Precondition if="climb_position_reached != 1" else="SUCCESS">               
+                <SickPIDClient name="go_to_climb_(photo_tree)" setpoint="{sick_martial_middle_entrance}"/>
+            </Precondition>
+
+            <Inverter> <!--Go until prox triggers in climbing block-->
+                <ReactiveSequence>
+                    <Inverter>
+                        <CheckForProx climb_state="0"/>
+                    </Inverter>
+                    <KeepRunningUntilFailure>
+                        <VelPublish climb_state="0" next_climb_state="0"/>
+                    </KeepRunningUntilFailure>
+                </ReactiveSequence>
+            </Inverter>
+
+            <Precondition if="trust == 0" else="SUCCESS"> <!--If trust is in camera, else success-->
+                <Delay name="delay_1" delay_msec="1000">
+                    <RetryUntilSuccessful num_attempts="-1">
+                        <Sequence name="roi_detection_retry_2">
+                            <GetROIDetections
+                                name="get_roi_detections_2"
+                                stage="2"
+                                detections="{stage2_detections}"
+                            />
+                        </Sequence>
+                    </RetryUntilSuccessful>
+                </Delay>
+            </Precondition>
+
+            <Climb name="Climb" up_down="1"/>
+            <Roll name="Roll" climb_state="0" />
+            <Climb name="Retract" up_down="-1" next_climb_state="0"/>
+            
+            <Precondition if="trust == 0" else="SUCCESS">
+                <Sequence>
+                    <Inverter>
+                        <ReactiveSequence>
+                            <Inverter>
+                                <CheckForProx climb_state="0"/>
+                            </Inverter>
+                            <KeepRunningUntilFailure>
+                                <VelPublish climb_state="0" next_climb_state="0"/>
+                            </KeepRunningUntilFailure>
+                        </ReactiveSequence>
+                    </Inverter>
+
+                    <Delay name="delay_2" delay_msec="1000">
+                        <RetryUntilSuccessful num_attempts="-1">
+                            <Sequence name="roi_detection_retry_3">
+                                <GetROIDetections
+                                    name="get_roi_detections_3"
+                                    stage="3"
+                                    detections="{stage3_detections}"
+                                />
+                            </Sequence>
+                        </RetryUntilSuccessful>
+                    </Delay>
+
+                    <Delay name="delay_4" delay_msec="1000">
+                        <RetryUntilSuccessful num_attempts="-1">
+                            <Sequence name="roi_detection_retry_4">
+                                <GetROIDetections
+                                    name="get_roi_detections_4"
+                                    stage="4"
+                                    detections="{stage4_detections}"
+                                />
+                            </Sequence>
+                        </RetryUntilSuccessful>
+                    </Delay>
+                </Sequence>
+            </Precondition>
+
+            <SetBlackboard output_key="climbed_three_photos" value="1" />
+
+        </Sequence>
+    </BehaviorTree>
+</root>

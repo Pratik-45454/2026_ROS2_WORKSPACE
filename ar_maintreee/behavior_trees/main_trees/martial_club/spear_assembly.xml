@@ -1,0 +1,40 @@
+<root BTCPP_format="4">
+    <BehaviorTree ID="SpearAssembly">
+        <Sequence>
+
+            <!-- <Precondition if="trust == 0 && photo_stage_1 == 0"  else="SUCCESS"> 0 is for camera, 1 is for display, photo_stage_1 will be 1 when tree startup has already clicked photo -->
+                    <!-- <Delay name="startup_delay" delay_msec="1000">
+                        <RetryUntilSuccessful num_attempts="-1">
+                            <Sequence name="roi_detection_retry">
+                                <GetROIDetections
+                                    name="get_roi_detections"
+                                    stage="1"
+                                    detections="{stage1_detections}"
+                                />
+                            </Sequence>
+                        </RetryUntilSuccessful>
+                    </Delay>
+                    <AlwaysSuccess/>
+            </Precondition> -->
+
+            <YawSetpoint name="face_spear_head" turn="{turn}" current_yaw="{current_yaw}"/>
+
+            <OdomPIDClient name="entrance_odom_pid" setpoint="{odom_martial_spear_head}"/> <!--Approach spear head rack, optimised for color-->
+
+            <Delay name = "gripper_simulate" delay_msec="3000">
+                <SetBlackboard output_key="spear_assembled" value="1" />
+            </Delay>
+            
+            <DecisionOdom 
+                stage1="{stage1_detections}"
+                current_yaw="{current_yaw}"
+                turn="{turn}"
+                color="{color}"/> <!--Decides between three setpoints on the x-axis based on camera or display input-->
+
+            <OdomPIDClient name="entrance_odom_pid" setpoint="{entrance_movement_odom}"/> <!--Remove this if using odom pick from entrance-->
+            <YawSetpoint name="face_forest" turn="{turn}" current_yaw="{current_yaw}"/>
+
+        </Sequence>
+
+    </BehaviorTree>
+</root>

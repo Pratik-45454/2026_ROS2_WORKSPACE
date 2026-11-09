@@ -1,0 +1,35 @@
+
+move_server:
+  ros__parameters:
+    # X-axis PID
+    x_kp: 0.004
+    x_ki: 0.0
+    x_kd: 0.0
+    # Y-axis PID
+    y_kp: 0.002
+    y_ki: 0.0
+    y_kd: 0.001
+    # Control limits
+    dist_tol:    15.0   # mm  — tolerance to consider axis done
+    max_vel:      2.0   # m/s — PID output clamp
+    sample_time:  10    # ms  — control loop period
+
+
+rotate_exec_server:
+  ros__parameters:
+    # Yaw PID
+    yaw_kp:             0.9
+    yaw_ki:             0.1
+    yaw_kd:             0.05
+    # Control limits
+    yaw_tolerance_rad:  0.01  # rad   — tolerance to consider rotation done
+    max_omega_p:         6.0  # rad/s — positive output clamp
+    max_omega_n:        -6.0  # rad/s — negative output clamp
+    sample_time_ms:      20   # ms    — control loop period
+
+
+bt_manager_node:
+  ros__parameters:
+    roll:
+      roll_up_angle:    10.9    # motor angle sent when rolling UP
+      roll_down_angle: -11.4    # motor angle sent when rolling DOWN

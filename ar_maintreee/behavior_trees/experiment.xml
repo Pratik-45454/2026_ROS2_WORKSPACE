@@ -1,0 +1,57 @@
+
+<root BTCPP_format="4" main_tree_to_execute="MainTree">
+  <BehaviorTree ID="MainTree">
+  <Sequence name="MainSequence">
+     
+    <Sequence name="scrollready">
+      <RetryUntilSuccessful num_attempts="-1">
+        <setHeight height="10.0"/>
+      </RetryUntilSuccessful>
+      <RetryUntilSuccessful num_attempts="-1">
+        <setExtension length="8.0"/>
+      </RetryUntilSuccessful>
+      <RetryUntilSuccessful num_attempts="-1">
+        <GripperPose angle="3.0" />
+      </RetryUntilSuccessful>
+      <RetryUntilSuccessful num_attempts="-1">
+        <GripperAct state = "-1" />
+      </RetryUntilSuccessful>
+      
+    </Sequence>
+  
+
+    <Sequence name="PickScroll">
+      <!-- <RetryUntilSuccessful num_attempts="-1">
+        <setHeight height="1.0"/>
+      </RetryUntilSuccessful>
+      <RetryUntilSuccessful num_attempts="-1">
+        <setExtension length="2.0"/>
+      </RetryUntilSuccessful> -->
+      <!-- <RetryUntilSuccessful num_attempts="-1">
+        <GripperPose angle="3.0" />
+      </RetryUntilSuccessful> -->  // goal_nodes_ = {10, 12};
+      <RetryUntilSuccessful num_attempts="-1">
+        <GripperAct state = "0" />
+      </RetryUntilSuccessful>
+      
+     
+    </Sequence>
+    <Sequence name="StoreScroll">
+      <RetryUntilSuccessful num_attempts="-1">
+        <setHeight height="1.0"/>  // goal_nodes_ = {10, 12};
+      </RetryUntilSuccessful>
+      <RetryUntilSuccessful num_attempts="-1">
+        <setExtension length="6.0"/>
+      </RetryUntilSuccessful>
+      <RetryUntilSuccessful num_attempts="-1">
+        <GripperPose angle="0.0" />
+      </RetryUntilSuccessful>
+      <RetryUntilSuccessful num_attempts="-1">
+        <GripperAct state = "1" />
+      </RetryUntilSuccessful>
+       
+    </Sequence>
+  </Sequence>
+  </BehaviorTree>
+
+</root>

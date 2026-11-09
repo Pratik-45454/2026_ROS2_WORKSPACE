@@ -1,0 +1,82 @@
+#Setpoints for odom navigation
+odom:
+  red:
+    martial:
+      spear_head: [890.452 , 858.809] #890.452 , 858.809
+
+    arena:
+      lock_ramp: null
+      tictac_left: null
+      tictac_middle: null
+      ticktac_right: null
+      tictac_photo: null
+
+      approach_dropped: [600.0, 700.0]
+
+  blue:
+    martial:
+      spear_head: [600.0, 700.0]
+
+    arena:
+      lock_ramp: null
+      tictac_left: null
+      tictac_middle: null
+      ticktac_right: null
+      tictac_photo: null
+
+      approach_dropped: [600.0, 700.0]
+
+  common:
+    martial:
+      closest_entrance: [-1282.08 , 830.0]
+      middle_entrance: [-2430.0, 830.0]
+      furthest_entrance: [-3755.0, 830.0]
+
+#Setpoints for sick navigation
+sick:
+  red:
+    martial:
+      closest_entrance: [110, 627, 500, 700] #1st is front and 2nd is left
+      closest_entrance_grip: [70, 627, 500, 700]
+
+      middle_entrance: [110, 1166, 300, 300]
+
+      furthest_entrance: [110.0, 1682.0, 900.0, 600.0]
+      furthest_entrance_grip: [70, 1682, 500, 700]
+
+      sensor_indices: [0, 2]
+  
+    arena:
+      lock_ramp: null
+      tictac_left: null
+      tictac_middle: null
+      ticktac_right: null
+      tictac_photo: null
+
+      sensor_align_indices: [0, 2]
+      sensor_tic_tac_indices: [0, 3]
+  
+  blue:
+    martial:
+      closest_entrance: [175, 627, 500, 700] #these setpoints are totally wrong
+      closest_entrance_grip: [73, 627, 500, 700]
+
+      middle_entrance: [175, 1166, 300, 300]
+
+      furthest_entrance: [175.0, 1682.0, 900.0, 600.0]
+      furthest_entrance_grip: [73, 1682, 500, 700]
+
+      sensor_indices: [0, 3]
+
+    arena:
+      lock_ramp: null
+      tictac_left: null
+      tictac_middle: null
+      ticktac_right: null
+      tictac_photo: null
+
+      sensor_align_indices: [0, 3]
+      sensor_tic_tac_indices: [0, 2]
+
+
+

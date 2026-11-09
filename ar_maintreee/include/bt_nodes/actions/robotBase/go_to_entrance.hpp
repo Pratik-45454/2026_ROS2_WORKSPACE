@@ -1,0 +1,88 @@
+#ifndef GO_TO_ENTRANCE_HPP
+#define GO_TO_ENTRANCE_HPP
+
+#include <string>
+#include <memory>
+
+#include "rclcpp/rclcpp.hpp"
+#include "rclcpp_action/rclcpp_action.hpp"
+
+#include "behaviortree_cpp/action_node.h"
+#include "behaviortree_cpp/bt_factory.h"
+
+#include "ar_interfaces_2026/action/movement.hpp"
+#include "std_msgs/msg/u_int16_multi_array.hpp"
+#include "std_msgs/msg/float32_multi_array.hpp"
+#include "ament_index_cpp/get_package_share_directory.hpp"
+#include "nav_msgs/msg/odometry.hpp"
+#include "geometry_msgs/msg/twist.hpp"
+#include "qos_profiles.hpp"
+#include "bt_nodes/camera_nodes/get_roi_detections.hpp"
+#include "bt_nodes/actions/robotBase/yaw_setpoint.hpp"
+
+class GoToEntrance : public BT::StatefulActionNode
+{
+public:
+    GoToEntrance(const std::string &name,
+                  const BT::NodeConfig &config,
+                  rclcpp::Node::SharedPtr node);
+
+    static BT::PortsList providedPorts();
+
+    BT::NodeStatus onStart() override;
+    BT::NodeStatus onRunning() override;
+    void onHalted() override;
+
+    using GoalHandleMovement = rclcpp_action::ClientGoalHandle<ar_interfaces_2026::action::Movement>;
+    using Movement = ar_interfaces_2026::action::Movement;
+
+    const std::vector<float> ROI1_SP       = { 2100.0f, 8500.0f, 0.0f, 0.0f };
+    const std::vector<float> ROI2_SP       = { 2140.0f, 6000.0f, 0.0f, 0.0f };
+    const std::vector<float> ROI3_SP       = { 2135.0f, 4000.0f, 0.0f, 0.0f };
+
+    const std::vector<float> RIGHT_ROI1_SP = { 9200.0f, 6500.0f, 0.0f, 0.0f };
+    const std::vector<float> RIGHT_ROI2_SP = { 6450.0f, 6180.0f, 0.0f, 0.0f };
+    const std::vector<float> RIGHT_ROI3_SP = { 4230.0f, 5580.0f, 0.0f, 0.0f };
+
+    const std::vector<float> LEFT_ROI1_SP  = { 2100.0f, 8500.0f, 0.0f, 0.0f };
+    const std::vector<float> LEFT_ROI2_SP  = { 2140.0f, 6000.0f, 0.0f, 0.0f };
+    const std::vector<float> LEFT_ROI3_SP  = { 2135.0f, 4000.0f, 0.0f, 0.0f };
+
+    void cancel_goal();
+    void sickCallback(const std_msgs::msg::Float32MultiArray::SharedPtr msg);
+    void odometry_callback(const nav_msgs::msg::Odometry &msg);
+    void resetVel();
+
+    void goal_response_callback(const GoalHandleMovement::SharedPtr &goal_handle_);
+    void result_callback(const GoalHandleMovement::WrappedResult &result);
+    void feedback_callback(GoalHandleMovement::SharedPtr,
+                           const std::shared_ptr<const ar_interfaces_2026::action::Movement::Feedback> feedback);
+
+    void set_setpoints(const MartialStageDetections &det, const int yaw_int_,
+                       std::string &turn_output, const std::string &color);
+
+private:
+    rclcpp::Node::SharedPtr node_;
+    rclcpp::Subscription<std_msgs::msg::Float32MultiArray>::SharedPtr sick_subscriber;
+    rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odom_subscriber;
+    rclcpp_action::Client<ar_interfaces_2026::action::Movement>::SharedPtr client_ptr;
+    rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr cmd_pub_;
+
+    ar_interfaces_2026::action::Movement::Goal goal_msg;
+    nav_msgs::msg::Odometry odom_msg;
+    std::vector<float> sick_data;
+    std::vector<float> true_setpoint;
+
+    rclcpp_action::ClientGoalHandle<ar_interfaces_2026::action::Movement>::SharedPtr goal_handle;
+
+    bool done_flag{false};
+    bool success{false};
+    bool check{false};
+    bool first_stage_done{false};
+    bool climb_position_reached{0};
+
+    std::string under_roi;
+    uint32_t start_time{0};
+};
+
+#endif

@@ -1,0 +1,175 @@
+
+<?xml version="1.0"?>
+<root BTCPP_format="4">
+    <BehaviorTree ID="GripperScrollPick_Ready">
+        <Sequence>
+            <!-- <IfThenElse>
+                <Precondition if="climb_state == 0" else="FAILURE">
+                    <AlwaysSuccess/>
+                </Precondition> -->
+                <!-- <setHeight height="0.0"/> -->
+                <setHeight height="32.0"/>
+            <!-- </IfThenElse> -->
+
+                <!-- <Parallel> -->
+                    <RetryUntilSuccessful num_attempts="-1">
+                        <GripperPose angle="3.5"/>
+                    </RetryUntilSuccessful>
+                     <RetryUntilSuccessful num_attempts="-1">
+                        <GripperAct state="-2.0"/>
+                      </RetryUntilSuccessful>
+                    <!-- <RetryUntilSuccessful num_attempts="-1">
+                        <GripperAct state="-2.0"/>
+                    </RetryUntilSuccessful> -->
+                <!-- </Parallel> -->
+
+        </Sequence>        
+    </BehaviorTree>
+
+    <BehaviorTree ID="GripperScrollPick">
+        <Sequence>
+            <RetryUntilSuccessful num_attempts="-1">
+                <GripperAct state="-0.1"/>
+            </RetryUntilSuccessful>
+
+            <RetryUntilSuccessful num_attempts="-1">
+                <GripperPose angle="1.8"/>
+            </RetryUntilSuccessful>
+        </Sequence>        
+    </BehaviorTree>
+
+    <BehaviorTree ID="GripperScrollHold">
+        <!-- <RetryUntilSuccessful num_attempts="-1">
+            <setHeight height="500"/>
+        </RetryUntilSuccessful> -->
+        <RetryUntilSuccessful num_attempts="-1">
+            <GripperPose angle="1.8"/>
+        </RetryUntilSuccessful>
+    </BehaviorTree>
+
+    <BehaviorTree ID="GripperScrollHold_Arena">
+        <RetryUntilSuccessful num_attempts="-1">
+            <setHeight height="30"/>
+        </RetryUntilSuccessful>
+    </BehaviorTree>
+
+
+    <BehaviorTree ID="GripperScrollStore">
+        <Sequence>
+            <!-- <DecisionGripperHeight name="Decide robot store height"
+                store_place ="0"
+                count ="{count}"
+                height = "{height}"
+            /> -->
+            <!-- <Parallel>
+                <Sequence> -->
+                    <!-- <RetryUntilSuccessful num_attempts="-1">
+                        <setHeight height="{height}"/>
+                        <setHeight height="{height}"/>
+                    </RetryUntilSuccessful> -->
+                    <RetryUntilSuccessful num_attempts="-1">
+                        <GripperPose angle="0.2"/>
+                    </RetryUntilSuccessful>
+                    <RetryUntilSuccessful num_attempts="-1">
+                        <GripperAct state="-2.0"/>
+                    </RetryUntilSuccessful>
+                
+                <!-- </Sequence>
+            </Parallel> -->
+        </Sequence>        
+    </BehaviorTree>
+   
+
+    <BehaviorTree ID="GripperArenaPlace_Ready">
+        <Sequence>
+            <DecisionGripperHeight name="Decide arena place height"
+                store_place ="1"
+                count ="{count}"
+                height = "{height}"
+            />
+            
+            <Parallel>
+                <Sequence>
+                    <RetryUntilSuccessful num_attempts="-1">
+                        <setHeight height="22.0"/>
+                    </RetryUntilSuccessful>
+                    <RetryUntilSuccessful num_attempts="-1">
+                        <GripperAct state="0.7"/>
+                    </RetryUntilSuccessful>
+                    <RetryUntilSuccessful num_attempts="-1">
+                        <GripperPose angle="0.0"/>
+                    </RetryUntilSuccessful>
+                   
+                
+                </Sequence>
+            </Parallel>
+
+           
+             <Sequence name="scrollready">
+                <RetryUntilSuccessful num_attempts="-1">
+                        <GripperAct state="-0.1"/>
+                </RetryUntilSuccessful>
+                <RetryUntilSuccessful num_attempts="-1">
+                    <GripperPose angle="3.75"/>
+                </RetryUntilSuccessful>
+                <RetryUntilSuccessful num_attempts="-1">
+                        <setHeight height="22.0"/>
+                </RetryUntilSuccessful>      
+            </Sequence>
+            
+        </Sequence>        
+    </BehaviorTree>
+
+    <BehaviorTree ID="GripperArenaPlace">
+        <Sequence name="placingInArena">
+            <Move name="moveforplace" move_x="50.0" move_y="0.0"
+                        x_kp="0.009" x_ki="0.0" x_kd="0.003"
+                        y_kp="0.002" y_ki="0.0" y_kd="0.001"/>
+            <RetryUntilSuccessful num_attempts="-1">
+                    <GripperAct state="0.7"/>
+            </RetryUntilSuccessful>
+            <RetryUntilSuccessful num_attempts="-1">
+                    <setHeight height="10.0"/>
+            </RetryUntilSuccessful>   
+
+           <RetryUntilSuccessful num_attempts="-1">
+                <GripperPose angle="3.75"/>
+            </RetryUntilSuccessful>      
+        </Sequence>
+    </BehaviorTree>
+
+    <BehaviorTree ID="GripperEntraceScrollPick_Ready">
+        <Sequence>
+            <Parallel>
+                <RetryUntilSuccessful num_attempts="-1">
+                    <setHeight height="0.0"/>
+                </RetryUntilSuccessful>
+                <RetryUntilSuccessful num_attempts="-1">
+                    <GripperPose angle="3.75"/>
+                </RetryUntilSuccessful>
+                <RetryUntilSuccessful num_attempts="-1">
+                    <GripperAct state="0.7"/>
+                </RetryUntilSuccessful>
+            </Parallel>
+
+        </Sequence>        
+    </BehaviorTree>
+
+    <BehaviorTree ID="GripperGroundScrollPick_Ready">
+        <Sequence>
+            <Parallel>
+                <RetryUntilSuccessful num_attempts="-1">
+                    <setHeight height="330.0"/>
+                </RetryUntilSuccessful>
+                <RetryUntilSuccessful num_attempts="-1">
+                    <GripperPose angle="3.75"/>
+                </RetryUntilSuccessful>
+                <RetryUntilSuccessful num_attempts="-1">
+                    <GripperAct state="0.7"/>
+                </RetryUntilSuccessful>
+            </Parallel>
+
+        </Sequence>        
+    </BehaviorTree>
+
+</root>
