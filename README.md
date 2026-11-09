@@ -154,9 +154,9 @@ ros2 run bt_servers move_server --ros-args --params-file src/ar_maintreee/config
 ## Gallery
 
 <p align="center">
-  <img src="docs/images/w2.jpg" width="32%">
-  <img src="docs/images/w6.jpg" width="32%">
-  <img src="docs/images/w7.jpg" width="32%">
+  <img src="docs/images/w2.jpeg" width="32%">
+  <img src="docs/images/w6.jpeg" width="32%">
+  <img src="docs/images/w7.jpeg" width="32%">
 </p>
 
 ---
